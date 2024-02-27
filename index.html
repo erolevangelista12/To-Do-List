@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: top;
+      height: 100vh;
+    }
+    #todo-container {
+      background-color: #CF9FFF;
+      padding: 20px;
+      border-radius: 25px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 1);
+      width: 500px;
+      height: 700px;
+    }
+    h1 {
+      font-size: 2.5em;
+      text-align: center;
+      color: purple;
+    }
+    p {
+      text-align: center;
+      color: red;
+      font-size: 12px;
+      font-style: oblique;
+      margin-bottom: 20px;
+    }
+    .input-container {
+      display: flex;
+      align-items: center;
+    }
+    #new-todo {
+      width: 250px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #fffacd;
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+      outline: none;
+    }
+    #add-todo-button {
+      font-size: 16px;
+      font-weight: bold;
+      padding: 9px 15px;
+      border: none;
+      background-color: #90EE90;
+      color: green;
+      border-radius: 4px;
+      margin-left: 1px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+    }
+    #add-todo-button:hover {
+      color: white;
+      background-color: green;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+    li {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .todo-text {
+      flex-grow: 1;
+      font-size: 16px;
+      font-weight: bold;
+      margin-right: 10px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      padding: 5px;
+      color: black;
+      background-color: #f8e8d3;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    }
+    button {
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      padding: 7px 10px;
+      cursor: pointer;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+    }
+    .edit-button {
+      background-color: #ADD8E6;
+      color: blue;
+    }
+    .edit-button:hover {
+      color: white;
+      background-color: blue;
+    }
+    .delete-button {
+      background-color: #FFCCCB;
+      color: red;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    .delete-button:hover {
+      color: white;
+      background-color: red;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div id="todo-container">
+    <h1>To Do List</h1>
+    <p>Maximum of 18 characters.<br>Maximum of 10 to do items.</p>
+    <div class="input-container">
+      <input type="text" id="new-todo" placeholder="Enter To Do">
+      <button id="add-todo-button">SAVE</button>
+    </div>
+    <ul id="todo-list">
+    </ul>
+  </div>
+  <script>
+    const todoList = document.querySelector("#todo-list");
+    const newTodoInput = document.querySelector("#new-todo");
+    const addTodoButton = document.querySelector("#add-todo-button");
+
+    function createTodoItem(text) {
+      if (todoList.childElementCount >= 10) {
+        alert("Maximum number of to do items reached (10).");
+        return;
+      }
+
+      const todoItem = document.createElement("li");
+
+      const editButton = document.createElement("button");
+      editButton.textContent = "Edit";
+      editButton.classList.add("edit-button");
+      todoItem.appendChild(editButton);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.classList.add("delete-button");
+      todoItem.appendChild(deleteButton);
+
+      const todoText = document.createElement("span");
+      todoText.textContent = text;
+      todoText.classList.add("todo-text");
+      todoItem.appendChild(todoText);
+
+      todoList.appendChild(todoItem);
+
+      if (text.length > 18) {
+        todoText.textContent = text.substring(0, 18);
+      }
+
+      deleteButton.addEventListener("click", () => {
+        const confirmation = confirm("Do you want to delete it?");
+        if (confirmation) {
+          todoList.removeChild(todoItem);
+          saveTodoListToLocalStorage();
+        }
+      });
+      editButton.addEventListener("click", () => {
+        const editText = prompt("Edit To Do:", text);
+        if (editText !== null) {
+          todoText.textContent = editText.substring(0, 18);
+          saveTodoListToLocalStorage();
+        }
+      });
+      todoText.addEventListener("dblclick", () => {
+        const editText = prompt("Edit To Do:", text);
+        if (editText !== null) {
+          todoText.textContent = editText.substring(0, 18);
+          saveTodoListToLocalStorage();
+        }
+      });
+    }
+
+    addTodoButton.addEventListener("click", () => {
+      const text = newTodoInput.value.trim();
+      if (text) {
+        if (text.length > 18) {
+          alert("Maximum characters exceeded (18).");
+          return;
+        }
+        createTodoItem(text);
+        newTodoInput.value = "";
+        saveTodoListToLocalStorage();
+      }
+    });
+  </script>
+</body>
+</html>
